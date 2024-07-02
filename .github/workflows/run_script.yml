@@ -1,0 +1,28 @@
+name: Run Python Script in Codespaces
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/vscode/devcontainers/python:0-3.8
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install azure-cognitiveservices-speech python-dotenv
+
+    - name: Run script
+      env:
+        SPEECH_KEY: ${{ secrets.SPEECH_KEY }}
+        SERVICE_REGION: ${{ secrets.SERVICE_REGION }}
+      run: python transcribebak.py
